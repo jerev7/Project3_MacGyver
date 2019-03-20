@@ -25,50 +25,48 @@ screen = pygame.display.set_mode((size), pygame.RESIZABLE)
 # Titre du jeu
 pygame.display.set_caption("Mac Gyver Labyrinthe")
 
-# Chargement et collage du fond
-background = pygame.image.load("data/fond.jpg").convert()
-screen.blit(background, (0, 0))
-#Personnage
+#This will be a list that will contain all the sprites we intend to use in our game.
+all_sprites_list = pygame.sprite.Group()
+
+background = objects.Background()
+all_sprites_list.add(background)
+
 MacGyver = objects.MainCharacter()
-screen.blit(MacGyver.picture, MacGyver.rect)
+all_sprites_list.add(MacGyver)
 
-
-#Rafraîchissement de l'écran
-pygame.display.flip()
-
-#Fonction pour pouvoir rester appuyé sur les touches:
-#pygame.key.set_repeat(400, 30)
-#Boucle infini
-
+#Allowing the user to close the window...
 carryOn = True
-
+clock=pygame.time.Clock()
+ 
 while carryOn:
-	pygame.time.Clock().tick(30)
-	for event in pygame.event.get(): # On parcours la liste de tous les evenement reçus
-		if event.type == pygame.QUIT:
-			carryOn = False
-		if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_ESCAPE:
-					carryOn = False
-		if (MacGyver.rect.x <= (SCREENWIDTH-30) and MacGyver.rect.x >= 0) and (MacGyver.rect.y <= (SCREENHEIGHT-30) and MacGyver.rect.y >= 0):	
-			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_DOWN:
-					MacGyver.moveDown(30)
-				if event.key == pygame.K_UP:
-					MacGyver.moveUp(30)
-				if event.key == pygame.K_LEFT:
-					MacGyver.moveLeft(30)
-				if event.key == pygame.K_RIGHT:
-					MacGyver.moveRight(30)
-	
-
-	
-	screen.blit(background, (0, 0))
-	screen.blit(MacGyver.picture, (MacGyver.rect.x, MacGyver.rect.y))
-	
-	#Game Logic
-	
-	pygame.display.flip()
-	
-
-
+        for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                carryOn=False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    carryOn = False
+                if event.key == pygame.K_DOWN:
+                    MacGyver.moveDown(30)
+                if event.key == pygame.K_UP:
+                    MacGyver.moveUp(30)
+                if event.key == pygame.K_LEFT:
+                    MacGyver.moveLeft(30)
+                if event.key == pygame.K_RIGHT:
+                    MacGyver.moveRight(30)    
+        #Game Logic
+        all_sprites_list.update()
+ 
+        #Drawing on Screen
+        #screen.fill(GREEN)
+       
+        
+        #Now let's draw all the sprites in one go. (For now we only have 1 sprite!)
+        all_sprites_list.draw(screen)
+ 
+        #Refresh Screen
+        pygame.display.flip()
+ 
+        #Number of frames per secong e.g. 60
+        clock.tick(60)
+ 
+pygame.quit()
