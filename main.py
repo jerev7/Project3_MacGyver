@@ -46,13 +46,17 @@ while carryOn:
                 if event.key == pygame.K_ESCAPE:
                     carryOn = False
                 if event.key == pygame.K_DOWN:
-                    MacGyver.moveDown(30)
+                    if (MacGyver.rect.y + 30) < SCREENHEIGHT:
+                        MacGyver.moveDown(30)
                 if event.key == pygame.K_UP:
-                    MacGyver.moveUp(30)
+                    if (MacGyver.rect.y - 30) >= 0: 
+                        MacGyver.moveUp(30)
                 if event.key == pygame.K_LEFT:
-                    MacGyver.moveLeft(30)
+                    if (MacGyver.rect.x - 30) >= 0:
+                        MacGyver.moveLeft(30)
                 if event.key == pygame.K_RIGHT:
-                    MacGyver.moveRight(30)    
+                    if (MacGyver.rect.x + 30) < SCREENWIDTH:
+                        MacGyver.moveRight(30)
         #Game Logic
         all_sprites_list.update()
  
