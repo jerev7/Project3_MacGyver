@@ -26,14 +26,20 @@ screen = pygame.display.set_mode((size), pygame.RESIZABLE)
 pygame.display.set_caption("Mac Gyver Labyrinthe")
 
 #This will be a list that will contain all the sprites we intend to use in our game.
-all_sprites_list = pygame.sprite.Group()
+background_sprite = pygame.sprite.Group()
+main_character_sprite = pygame.sprite.Group()
+wall_sprites = pygame.sprite.Group()
+item_sprites = pygame.sprite.Group()
 
 background = objects.Background()
-all_sprites_list.add(background)
+background_sprite.add(background)
 
 MacGyver = objects.MainCharacter()
-all_sprites_list.add(MacGyver)
+main_character_sprite.add(MacGyver)
 
+
+wall = objects.Wall(60, 90)
+wall_sprites.add(wall)
 #Allowing the user to close the window...
 carryOn = True
 clock=pygame.time.Clock()
@@ -58,14 +64,15 @@ while carryOn:
                     if (MacGyver.rect.x + 30) < SCREENWIDTH:
                         MacGyver.moveRight(30)
         #Game Logic
-        all_sprites_list.update()
+        background_sprite.update()
+        main_character_sprite.update()
+        wall_sprites.update()
  
-        #Drawing on Screen
-        #screen.fill(GREEN)
-       
         
         #Now let's draw all the sprites in one go. (For now we only have 1 sprite!)
-        all_sprites_list.draw(screen)
+        background_sprite.draw(screen)
+        wall_sprites.draw(screen)
+        main_character_sprite.draw(screen)
  
         #Refresh Screen
         pygame.display.flip()
