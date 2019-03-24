@@ -39,10 +39,10 @@ main_character_sprite.add(MacGyver)
 
 def draw_walls():
 
-    x_position_list = {30 : 60, 120 : 90, 300 : 360}
+    wall_position = {30 : 60, 120 : 90, 300 : 360}
     
-    for key, value in x_position_list.items():
-        wall = objects.Wall(key, value)
+    for x, y in wall_position.items():
+        wall = objects.Wall(x, y)
         wall_sprites.add(wall)
 draw_walls()
 
