@@ -37,10 +37,20 @@ background_sprite.add(background)
 MacGyver = objects.MainCharacter()
 main_character_sprite.add(MacGyver)
 
+def draw_walls():
 
-wall = objects.Wall(60, 90)
-wall_sprites.add(wall)
+    x_position_list = {30 : 60, 120 : 90, 300 : 360}
+    
+    for key, value in x_position_list.items():
+        wall = objects.Wall(key, value)
+        wall_sprites.add(wall)
+draw_walls()
+
+
+
 #Allowing the user to close the window...
+
+
 carryOn = True
 clock=pygame.time.Clock()
  

@@ -2,6 +2,7 @@
 
 import pygame
 
+
 class MainCharacter(pygame.sprite.Sprite):
 
     def __init__(self):
@@ -53,3 +54,5 @@ class Wall(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = int(position_x)
         self.rect.y = int(position_y)
+    
+
