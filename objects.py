@@ -1,6 +1,7 @@
 #coding: utf-8
 
 import pygame
+import random
 
 
 class MainCharacter(pygame.sprite.Sprite):
@@ -54,5 +55,14 @@ class Wall(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = int(position_x)
         self.rect.y = int(position_y)
-    
 
+class Item(pygame.sprite.Sprite):
+    def __init__(self):
+
+        super().__init__()
+        chargement_image = pygame.image.load("data/personnages.png").convert_alpha()
+        last_char = chargement_image.subsurface(pygame.Rect(256, 0, 32, 32))
+        self.image = pygame.transform.scale(last_char, (30, 30))
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randrange(0, 450, 30)
+        self.rect.y = random.randrange(0, 450, 30)

@@ -1,6 +1,5 @@
 #! /usr/bin/env python3
 #coding: utf-8
-#Importation des bibliothèques nécessaires
 
 import pygame
 import objects
@@ -22,10 +21,10 @@ pygame.init()
 #Création de la fenêtre
 screen = pygame.display.set_mode((size), pygame.RESIZABLE)
 
-# Titre du jeu
+#Game title
 pygame.display.set_caption("Mac Gyver Labyrinthe")
 
-#This will be a list that will contain all the sprites we intend to use in our game.
+#creating all different sprite groups.
 background_sprite = pygame.sprite.Group()
 main_character_sprite = pygame.sprite.Group()
 wall_sprites = pygame.sprite.Group()
@@ -37,19 +36,25 @@ background_sprite.add(background)
 MacGyver = objects.MainCharacter()
 main_character_sprite.add(MacGyver)
 
+needle = objects.Item()
+item_sprites.add(needle)
+
+# For the wall_position, keys will be the x coordinates and values will be the y coordinates.
+wall_position = {0 : [90, 120, 150, 270, 300, 330, 390], 30 : [0, 30, 90, 210, 270, 330, 390, 420], 60 : [30, 90, 150, 180, 210, 270, 420],
+90 : [90, 180, 330, 360, 420], 120 : [30, 60, 90, 120, 180, 210, 240, 270, 330, 360],
+150 : [240, 360], 180 : [0, 30, 90, 120, 150, 240, 300, 360, 390, 420],
+210 :[240, 300], 240 : [30, 60, 90, 120, 150, 180, 210, 240, 300, 330, 360, 390],
+270: [30, 120, 240, 390], 300 : [30, 90, 180, 240, 270, 300, 330, 360, 390],
+330 : [120, 180], 360 :[0, 60, 90, 120, 180, 240, 300, 330, 360, 390, 420], 390 : [0, 120, 240],
+420 :[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360, 390]}
 def draw_walls():
+       
+    for x, y_list in wall_position.items():
+        for y in y_list:
+            wall = objects.Wall(x, y)
+            wall_sprites.add(wall)
 
-    wall_position = {30 : 60, 120 : 90, 300 : 360}
-    
-    for x, y in wall_position.items():
-        wall = objects.Wall(x, y)
-        wall_sprites.add(wall)
 draw_walls()
-
-
-
-#Allowing the user to close the window...
-
 
 carryOn = True
 clock=pygame.time.Clock()
@@ -73,17 +78,11 @@ while carryOn:
                 if event.key == pygame.K_RIGHT:
                     if (MacGyver.rect.x + 30) < SCREENWIDTH:
                         MacGyver.moveRight(30)
-        #Game Logic
-        background_sprite.update()
-        main_character_sprite.update()
-        wall_sprites.update()
- 
+        #updating the sprites
+        background_sprite.update();main_character_sprite.update();wall_sprites.update();item_sprites.update() 
         
-        #Now let's draw all the sprites in one go. (For now we only have 1 sprite!)
-        background_sprite.draw(screen)
-        wall_sprites.draw(screen)
-        main_character_sprite.draw(screen)
- 
+        #Now let's draw all the sprites in one go. 
+        background_sprite.draw(screen);wall_sprites.draw(screen);main_character_sprite.draw(screen);item_sprites.draw(screen)     
         #Refresh Screen
         pygame.display.flip()
  
