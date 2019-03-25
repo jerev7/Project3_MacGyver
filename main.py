@@ -47,7 +47,9 @@ wall_position = {0 : [90, 120, 150, 270, 300, 330, 390], 30 : [0, 30, 90, 210, 2
 270: [30, 120, 240, 390], 300 : [30, 90, 180, 240, 270, 300, 330, 360, 390],
 330 : [120, 180], 360 :[0, 60, 90, 120, 180, 240, 300, 330, 360, 390, 420], 390 : [0, 120, 240],
 420 :[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360, 390]}
-def draw_walls():
+
+
+def draw_walls(): # Function used to draw all the walls as sprites on the map
        
     for x, y_list in wall_position.items():
         for y in y_list:
