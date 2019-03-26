@@ -60,31 +60,52 @@ draw_walls()
 
 carryOn = True
 clock=pygame.time.Clock()
- 
 while carryOn:
+        moved_up = 0
+        moved_down = 0
+        moved_left = 0
+        moved_right = 0
         for event in pygame.event.get():
-            if event.type==pygame.QUIT:
-                carryOn=False
+            if event.type == pygame.QUIT:
+                carryOn = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     carryOn = False
                 if event.key == pygame.K_DOWN:
                     if (MacGyver.rect.y + 30) < SCREENHEIGHT:
                         MacGyver.moveDown(30)
+                        moved_down += 1
                 if event.key == pygame.K_UP:
                     if (MacGyver.rect.y - 30) >= 0: 
                         MacGyver.moveUp(30)
+                        moved_up += 1
                 if event.key == pygame.K_LEFT:
                     if (MacGyver.rect.x - 30) >= 0:
                         MacGyver.moveLeft(30)
+                        moved_left += 1
                 if event.key == pygame.K_RIGHT:
                     if (MacGyver.rect.x + 30) < SCREENWIDTH:
                         MacGyver.moveRight(30)
+                        moved_right += 1
+
         #updating the sprites
         background_sprite.update();main_character_sprite.update();wall_sprites.update();item_sprites.update() 
-        
+        #pygame.sprite.groupcollide(main_character_sprite, item_sprites, False, True)
+        collision_MacGyver_vs_walls = pygame.sprite.groupcollide(main_character_sprite, wall_sprites, False, False)
+        if collision_MacGyver_vs_walls:
+            if moved_down == 1:
+                MacGyver.moveUp(30)
+            elif moved_up == 1:
+                MacGyver.moveDown(30)
+            elif moved_left == 1:
+                MacGyver.moveRight(30)
+            elif moved_right == 1:
+                MacGyver.moveLeft(30)
         #Now let's draw all the sprites in one go. 
         background_sprite.draw(screen);wall_sprites.draw(screen);main_character_sprite.draw(screen);item_sprites.draw(screen)     
+        #if pygame.sprite.groupcollide(main_character_sprite, wall_sprites, False, False):
+        #    if moved_down == 1:
+        #        MacGyver.moveUp(30)
         #Refresh Screen
         pygame.display.flip()
  
