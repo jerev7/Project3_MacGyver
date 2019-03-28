@@ -4,6 +4,10 @@ import pygame
 import random
 
 
+
+
+
+
 class MainCharacter(pygame.sprite.Sprite):
 
     def __init__(self):
@@ -56,16 +60,16 @@ class Wall(pygame.sprite.Sprite):
 
 class Item(pygame.sprite.Sprite):
     
-    def __init__(self):
+    def __init__(self, file_location):
 
         super().__init__()
 
-        chargement_image = pygame.image.load("data/personnages.png").convert_alpha()
+        chargement_image = pygame.image.load(file_location).convert_alpha()
         last_char = chargement_image.subsurface(pygame.Rect(256, 0, 32, 32))
         self.image = pygame.transform.scale(last_char, (30, 30))
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(0, 450, 30)
-        self.rect.y = random.randrange(0, 450, 30)
+        self.rect.y = random.randrange(0, 450, 30)       
 
 class Boss(pygame.sprite.Sprite):
     def __init__(self):
@@ -76,3 +80,13 @@ class Boss(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = 420
         self.rect.y = 420
+
+class Text(pygame.sprite.Sprite):
+    def __init__(self):
+
+        super().__init__()
+        chargement_image = pygame.image.load("data/win.png").convert_alpha()
+        self.image = pygame.transform.scale(chargement_image, (100, 100))
+        self.rect = self.image.get_rect()
+        self.rect.x = 150
+        self.rect.y = 150

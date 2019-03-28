@@ -5,6 +5,7 @@ import pygame
 import objects
 import os
 
+from data import *
 #from pygame.locals import *
 
 WHITE = (255, 255, 255)
@@ -16,6 +17,7 @@ size = (SCREENWIDTH, SCREENHEIGHT)
 
 #Initialisation de la bibliothèque Pygame
 items_picked_up = 0
+items_number = 0
 pygame.init()
 
 
@@ -31,6 +33,10 @@ main_character_sprite = pygame.sprite.Group()
 wall_sprites = pygame.sprite.Group()
 item_sprites = pygame.sprite.Group()
 boss_sprite = pygame.sprite.Group()
+text_sprite = pygame.sprite.Group()
+
+text_printed = objects.Text()
+text_sprite.add(text_printed)
 
 background = objects.Background()
 background_sprite.add(background)
@@ -38,21 +44,9 @@ background_sprite.add(background)
 MacGyver = objects.MainCharacter()
 main_character_sprite.add(MacGyver)
 
-needle = objects.Item()
-items_number = 1
-item_sprites.add(needle)
 
 boss = objects.Boss()
 boss_sprite.add(boss)
-
-# For the wall_position, keys will be the x coordinates and values will be the y coordinates.
-wall_position = {0 : [90, 120, 150, 270, 300, 330, 390], 30 : [0, 30, 90, 210, 270, 330, 390, 420], 60 : [30, 90, 150, 180, 210, 270, 420],
-90 : [90, 180, 330, 360, 420], 120 : [30, 60, 90, 120, 180, 210, 240, 270, 330, 360],
-150 : [240, 360], 180 : [0, 30, 90, 120, 150, 240, 300, 360, 390, 420],
-210 :[240, 300], 240 : [30, 60, 90, 120, 150, 180, 210, 240, 300, 330, 360, 390],
-270: [30, 120, 240, 390], 300 : [30, 90, 180, 240, 270, 300, 330, 360, 390],
-330 : [120, 180], 360 :[0, 60, 90, 120, 180, 240, 300, 330, 360, 390, 420], 390 : [0, 120, 240],
-420 :[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360, 390]}
 
 
 def draw_walls(): # Function used to draw all the walls as sprites on the map
@@ -61,9 +55,24 @@ def draw_walls(): # Function used to draw all the walls as sprites on the map
         for y in y_list:
             wall = objects.Wall(x, y)
             wall_sprites.add(wall)
-
 draw_walls()
 
+def create_item():
+
+    i = 0
+    while i == 0:
+        monster = objects.Item("data/personnages.png")
+        i += 1
+        item_sprites.add(monster)
+        if pygame.sprite.groupcollide(item_sprites, wall_sprites, True, False):
+            i -= 1
+        if pygame.sprite.groupcollide(item_sprites, main_character_sprite, True, False):
+            i -= 1
+        if pygame.sprite.groupcollide(item_sprites, boss_sprite, True, False):
+            i -= 1
+    
+create_item()
+items_number += 1
 carryOn = True
 clock=pygame.time.Clock()
 while carryOn:
@@ -95,7 +104,7 @@ while carryOn:
                         moved_right += 1
                 
         #updating the sprites
-        background_sprite.update();main_character_sprite.update();wall_sprites.update();item_sprites.update();boss_sprite.update() 
+        background_sprite.update();main_character_sprite.update();wall_sprites.update();item_sprites.update();boss_sprite.update();text_sprite.update() 
         
         collision_MacGyver_vs_boss = pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, False)
         collision_MacGyver_vs_item = pygame.sprite.groupcollide(main_character_sprite, item_sprites, False, True)
@@ -115,24 +124,33 @@ while carryOn:
                 MacGyver.moveRight(30)
             elif moved_right == 1:
                 MacGyver.moveLeft(30)
-        if collision_MacGyver_vs_boss:
-            if items_picked_up == items_number:
-                pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, True)               
-                carryOn = False
-            else:
-                pygame.sprite.groupcollide(main_character_sprite, boss_sprite, True, False)
+        
         
                     
         #Now let's draw all the sprites in one go. 
+
+        if collision_MacGyver_vs_boss:
+            if items_picked_up == items_number:
+                pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, True)
+                main_character_sprite.update()
+                boss_sprite.update()
+                main_character_sprite.draw(screen)
+                boss_sprite.draw(screen)
+                text_sprite.draw(screen)
+                pygame.display.flip()
+                input()
+                carryOn = False
+            else:
+                pygame.sprite.groupcollide(main_character_sprite, boss_sprite, True, False)
+        #Refresh Screen
+
+
         background_sprite.draw(screen);wall_sprites.draw(screen);main_character_sprite.draw(screen);item_sprites.draw(screen);boss_sprite.draw(screen)     
+        
         #Refresh Screen
         pygame.display.flip()
  
         #Number of frames per secong e.g. 60
         clock.tick(60)
-pygame.font.init()
-font = pygame.font.SysFont("Comic sans MS",  36)
-text = font.render("Victory !!!", True, [255, 255, 255])
-screen.blit(text, (50,50))
-#input("Appuyez sur entrée pour continuer") 
+
 pygame.quit()
