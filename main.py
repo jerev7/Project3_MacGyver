@@ -3,10 +3,8 @@
 
 import pygame
 import objects
-import os
 import time
-from data import *
-#from pygame.locals import *
+
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -18,6 +16,14 @@ size = (SCREENWIDTH, SCREENHEIGHT)
 items_picked_up = 0
 items_number = 0
 
+# For the walls position, keys will be the x coordinates and values will be the y coordinates.
+wall_position = {0 : [90, 120, 150, 270, 300, 330, 390, 420], 30 : [0, 30, 90, 210, 270, 330, 390, 420], 60 : [30, 90, 150, 180, 210, 270, 420],
+90 : [90, 180, 330, 360, 420], 120 : [30, 60, 90, 120, 180, 210, 240, 270, 330, 360],
+150 : [240, 360], 180 : [0, 30, 90, 120, 150, 240, 300, 360, 390, 420],
+210 :[240, 300], 240 : [30, 60, 90, 120, 150, 180, 210, 240, 300, 330, 360, 390],
+270: [30, 120, 240, 390], 300 : [30, 90, 180, 240, 270, 300, 330, 360, 390],
+330 : [120, 180], 360 :[0, 60, 90, 120, 180, 240, 300, 330, 360, 390, 420], 390 : [0, 120, 240],
+420 :[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360, 390]}
 
 pygame.init()
 
@@ -156,8 +162,7 @@ while carryOn:
                 write_words("III OF III", 60, 180)
             letter_sprites.draw(screen)            
             pygame.display.flip()
-            pygame.time.wait(1000)
-            #time.sleep(2)
+            pygame.time.wait(1500)
             pygame.event.set_allowed(pygame.KEYDOWN)  
 
         background_sprite.draw(screen)
