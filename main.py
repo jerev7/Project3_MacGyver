@@ -17,6 +17,8 @@ size = (SCREENWIDTH, SCREENHEIGHT)
 
 items_picked_up = 0
 items_number = 0
+pause = False
+
 pygame.init()
 
 
@@ -32,7 +34,8 @@ wall_sprites = pygame.sprite.Group()
 item_sprites = pygame.sprite.Group()
 boss_sprite = pygame.sprite.Group()
 text_sprite = pygame.sprite.Group()
-
+blood_sprite = pygame.sprite.Group()
+letter_sprites = pygame.sprite.Group()
 
 background = objects.Background()
 background_sprite.add(background)
@@ -43,6 +46,7 @@ main_character_sprite.add(MacGyver)
 
 boss = objects.Boss()
 boss_sprite.add(boss)
+
 
 
 def draw_walls(): # Function used to draw all the walls as sprites on the map
@@ -75,7 +79,18 @@ create_item("data/ether.png")
 items_number += 1
 create_item("data/seringue.png")
 items_number += 1
+create_item("data/tube_plastique.png")
+items_number += 1
 
+
+def write_words(word, x_starting_position, y_starting_position):
+    for letter in word:
+        if letter == " ":
+            x_starting_position += 30
+        else:
+            each_letter = objects.Letters(letter, x_starting_position, y_starting_position)
+            letter_sprites.add(each_letter)
+            x_starting_position += 30
 
 
 carryOn = True
@@ -88,7 +103,7 @@ while carryOn:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 carryOn = False
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN and pause == False:
                 if event.key == pygame.K_ESCAPE:
                     carryOn = False
                 if event.key == pygame.K_DOWN:
@@ -119,11 +134,25 @@ while carryOn:
         collision_MacGyver_vs_boss = pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, False)
         collision_MacGyver_vs_item = pygame.sprite.groupcollide(main_character_sprite, item_sprites, False, True)
         collision_MacGyver_vs_walls = pygame.sprite.groupcollide(main_character_sprite, wall_sprites, False, False)
+        pause = True
+        if collision_MacGyver_vs_item:        
+                items_picked_up += 1
+                write_words("ITEMS PICKED UP", 0, 120)
+                if items_picked_up == 1: 
+                    write_words("I OF III", 120, 180)
+                elif items_picked_up == 2:
+                    write_words("II OF III", 90, 180)
+                elif items_picked_up == 3:
+                    write_words("III OF III", 60, 180)
+                letter_sprites.draw(screen)            
+                pygame.display.flip()
+                #pygame.time.wait(1000)
+                time.sleep(2)
+                
+        background_sprite.draw(screen)
+        wall_sprites.draw(screen)
+        item_sprites.draw(screen)
         
-        if collision_MacGyver_vs_item:
-            items_picked_up += 1
-
-
         if collision_MacGyver_vs_walls:
             if moved_down == 1:
                 MacGyver.moveUp(30)
@@ -134,38 +163,42 @@ while carryOn:
             elif moved_right == 1:
                 MacGyver.moveLeft(30)    
 
-        background_sprite.draw(screen)
-        wall_sprites.draw(screen)
-        item_sprites.draw(screen)     
         
-        #Refresh Screen
+       
         
         if collision_MacGyver_vs_boss:
             if items_picked_up == items_number:
                 pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, True)
                 main_character_sprite.draw(screen)
                 boss_sprite.draw(screen)
+                blood = objects.Blood(420)
+                blood_sprite.add(blood)
+                blood_sprite.draw(screen)
                 victory_text = objects.Text("data/win.png")
                 text_sprite.add(victory_text)
                 text_sprite.draw(screen)
                 pygame.display.flip()
                 #time.sleep(0.1)
-                input("Partie terminée : appuyez sur entrée pour quitter")
+                input("The game is over : press Enter to leave")
                 carryOn = False
             else:
                 pygame.sprite.groupcollide(main_character_sprite, boss_sprite, True, False)
                 boss_sprite.draw(screen)
+                blood = objects.Blood(390)
+                blood_sprite.add(blood)
+                blood_sprite.draw(screen)
                 loose_text = objects.Text("data/loose.jpeg")
                 text_sprite.add(loose_text)
                 text_sprite.draw(screen)
                 pygame.display.flip()
-                input("Vous êtes mort, relancez le jeu pour recommencer la partie (appuyez sur entrée pour quitter)")
                 carryOn = False
+                input("You are dead cause you haven't collected all the needed items to defeat the keeper, leave now by pressing Enter and start again !!")
         else:
             main_character_sprite.draw(screen)
             boss_sprite.draw(screen)
+            
             pygame.display.flip()
-        
+        pause = False
         #Number of frames per secong e.g. 60
         clock.tick(60)
 

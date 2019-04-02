@@ -85,3 +85,24 @@ class Text(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = 150
         self.rect.y = 150
+
+class Blood(pygame.sprite.Sprite):
+    def __init__(self, x_position):
+
+        super().__init__()
+        chargement_image = pygame.image.load("data/items.png").convert_alpha()
+        blood = chargement_image.subsurface(pygame.Rect(224, 0, 32, 32))
+        self.image = pygame.transform.scale(blood, (30, 30))
+        self.rect = self.image.get_rect()
+        self.rect.x = x_position
+        self.rect.y = 420
+
+class Letters(pygame.sprite.Sprite):
+    def __init__(self, letter, x_position, y_position):
+
+        super().__init__()
+        chargement_image = pygame.image.load("data/alphabet/" + letter + ".png").convert_alpha()
+        self.image = pygame.transform.scale(chargement_image, (30, 30))
+        self.rect = self.image.get_rect()
+        self.rect.x = int(x_position)
+        self.rect.y = int(y_position)
