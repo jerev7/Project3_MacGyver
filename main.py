@@ -17,7 +17,7 @@ size = (SCREENWIDTH, SCREENHEIGHT)
 
 items_picked_up = 0
 items_number = 0
-pause = False
+
 
 pygame.init()
 
@@ -96,32 +96,32 @@ def write_words(word, x_starting_position, y_starting_position):
 carryOn = True
 clock=pygame.time.Clock()
 while carryOn:
-        moved_up = 0
-        moved_down = 0
-        moved_left = 0
-        moved_right = 0
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+    moved_up = 0
+    moved_down = 0
+    moved_left = 0
+    moved_right = 0
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            carryOn = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
                 carryOn = False
-            if event.type == pygame.KEYDOWN and pause == False:
-                if event.key == pygame.K_ESCAPE:
-                    carryOn = False
-                if event.key == pygame.K_DOWN:
-                    if (MacGyver.rect.y + 30) < SCREENHEIGHT:
-                        MacGyver.moveDown(30)
-                        moved_down += 1
-                if event.key == pygame.K_UP:
-                    if (MacGyver.rect.y - 30) >= 0: 
-                        MacGyver.moveUp(30)
-                        moved_up += 1
-                if event.key == pygame.K_LEFT:
-                    if (MacGyver.rect.x - 30) >= 0:
-                        MacGyver.moveLeft(30)
-                        moved_left += 1
-                if event.key == pygame.K_RIGHT:
-                    if (MacGyver.rect.x + 30) < SCREENWIDTH:
-                        MacGyver.moveRight(30)
-                        moved_right += 1
+            if event.key == pygame.K_DOWN:
+                if (MacGyver.rect.y + 30) < SCREENHEIGHT:
+                    MacGyver.moveDown(30)
+                    moved_down += 1
+            if event.key == pygame.K_UP:
+                if (MacGyver.rect.y - 30) >= 0: 
+                    MacGyver.moveUp(30)
+                    moved_up += 1
+            if event.key == pygame.K_LEFT:
+                if (MacGyver.rect.x - 30) >= 0:
+                    MacGyver.moveLeft(30)
+                    moved_left += 1
+            if event.key == pygame.K_RIGHT:
+                if (MacGyver.rect.x + 30) < SCREENWIDTH:
+                    MacGyver.moveRight(30)
+                    moved_right += 1
                 
         #updating the sprites
         background_sprite.update()
@@ -129,29 +129,10 @@ while carryOn:
         wall_sprites.update()
         item_sprites.update()
         boss_sprite.update()
-        text_sprite.update() 
         
         collision_MacGyver_vs_boss = pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, False)
         collision_MacGyver_vs_item = pygame.sprite.groupcollide(main_character_sprite, item_sprites, False, True)
         collision_MacGyver_vs_walls = pygame.sprite.groupcollide(main_character_sprite, wall_sprites, False, False)
-        pause = True
-        if collision_MacGyver_vs_item:        
-                items_picked_up += 1
-                write_words("ITEMS PICKED UP", 0, 120)
-                if items_picked_up == 1: 
-                    write_words("I OF III", 120, 180)
-                elif items_picked_up == 2:
-                    write_words("II OF III", 90, 180)
-                elif items_picked_up == 3:
-                    write_words("III OF III", 60, 180)
-                letter_sprites.draw(screen)            
-                pygame.display.flip()
-                #pygame.time.wait(1000)
-                time.sleep(2)
-                
-        background_sprite.draw(screen)
-        wall_sprites.draw(screen)
-        item_sprites.draw(screen)
         
         if collision_MacGyver_vs_walls:
             if moved_down == 1:
@@ -161,24 +142,37 @@ while carryOn:
             elif moved_left == 1:
                 MacGyver.moveRight(30)
             elif moved_right == 1:
-                MacGyver.moveLeft(30)    
+                MacGyver.moveLeft(30)
 
-        
-       
+        if collision_MacGyver_vs_item:
+            pygame.event.set_blocked(pygame.KEYDOWN)
+            items_picked_up += 1
+            write_words("ITEMS PICKED UP", 0, 120)
+            if items_picked_up == 1: 
+                write_words("I OF III", 120, 180)
+            elif items_picked_up == 2:
+                write_words("II OF III", 90, 180)
+            elif items_picked_up == 3:
+                write_words("III OF III", 60, 180)
+            letter_sprites.draw(screen)            
+            pygame.display.flip()
+            pygame.time.wait(1000)
+            #time.sleep(2)
+            pygame.event.set_allowed(pygame.KEYDOWN)  
+
+        background_sprite.draw(screen)
+        wall_sprites.draw(screen)
+        item_sprites.draw(screen)
         
         if collision_MacGyver_vs_boss:
             if items_picked_up == items_number:
                 pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, True)
                 main_character_sprite.draw(screen)
                 boss_sprite.draw(screen)
-                blood = objects.Blood(420)
-                blood_sprite.add(blood)
-                blood_sprite.draw(screen)
                 victory_text = objects.Text("data/win.png")
                 text_sprite.add(victory_text)
                 text_sprite.draw(screen)
                 pygame.display.flip()
-                #time.sleep(0.1)
                 input("The game is over : press Enter to leave")
                 carryOn = False
             else:
@@ -196,9 +190,8 @@ while carryOn:
         else:
             main_character_sprite.draw(screen)
             boss_sprite.draw(screen)
-            
             pygame.display.flip()
-        pause = False
+
         #Number of frames per secong e.g. 60
         clock.tick(60)
 
