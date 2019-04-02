@@ -4,7 +4,7 @@
 import pygame
 import objects
 import os
-
+import time
 from data import *
 #from pygame.locals import *
 
@@ -15,13 +15,11 @@ SCREENHEIGHT=450
  
 size = (SCREENWIDTH, SCREENHEIGHT)
 
-#Initialisation de la bibliothèque Pygame
 items_picked_up = 0
 items_number = 0
 pygame.init()
 
 
-#Création de la fenêtre
 screen = pygame.display.set_mode((size), pygame.RESIZABLE)
 
 #Game title
@@ -35,8 +33,8 @@ item_sprites = pygame.sprite.Group()
 boss_sprite = pygame.sprite.Group()
 text_sprite = pygame.sprite.Group()
 
-text_printed = objects.Text()
-text_sprite.add(text_printed)
+victory_text = objects.Text("data/win.png")
+text_sprite.add(victory_text)
 
 background = objects.Background()
 background_sprite.add(background)
@@ -57,22 +55,31 @@ def draw_walls(): # Function used to draw all the walls as sprites on the map
             wall_sprites.add(wall)
 draw_walls()
 
-def create_item():
+def create_item(location):
 
-    i = 0
-    while i == 0:
-        monster = objects.Item("data/personnages.png")
-        i += 1
-        item_sprites.add(monster)
+    collision_nbr = 1
+    while collision_nbr != 0:
+        item = objects.Item(location)
+        collision_nbr = 0
+        # We test if the new item has not been created at the same place than another item already existing
+        if pygame.sprite.spritecollide(item, item_sprites, True):
+        	collision_nbr += 1
+        item_sprites.add(item)
+        # Then we test if the item has not been created at the same place than walls, Mac Gyver, or the boss
         if pygame.sprite.groupcollide(item_sprites, wall_sprites, True, False):
-            i -= 1
+            collision_nbr += 1
         if pygame.sprite.groupcollide(item_sprites, main_character_sprite, True, False):
-            i -= 1
+            collision_nbr += 1
         if pygame.sprite.groupcollide(item_sprites, boss_sprite, True, False):
-            i -= 1
-    
-create_item()
+            collision_nbr += 1
+
+create_item("data/ether.png")
 items_number += 1
+create_item("data/seringue.png")
+items_number += 1
+
+
+
 carryOn = True
 clock=pygame.time.Clock()
 while carryOn:
@@ -104,7 +111,12 @@ while carryOn:
                         moved_right += 1
                 
         #updating the sprites
-        background_sprite.update();main_character_sprite.update();wall_sprites.update();item_sprites.update();boss_sprite.update();text_sprite.update() 
+        background_sprite.update()
+        main_character_sprite.update()
+        wall_sprites.update()
+        item_sprites.update()
+        boss_sprite.update()
+        text_sprite.update() 
         
         collision_MacGyver_vs_boss = pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, False)
         collision_MacGyver_vs_item = pygame.sprite.groupcollide(main_character_sprite, item_sprites, False, True)
@@ -112,7 +124,6 @@ while carryOn:
         
         if collision_MacGyver_vs_item:
             items_picked_up += 1
-            #pygame.sprite.groupcollide(main_character_sprite, item_sprites, False, True)
 
 
         if collision_MacGyver_vs_walls:
@@ -123,33 +134,35 @@ while carryOn:
             elif moved_left == 1:
                 MacGyver.moveRight(30)
             elif moved_right == 1:
-                MacGyver.moveLeft(30)
-        
-        
-                    
-        #Now let's draw all the sprites in one go. 
+                MacGyver.moveLeft(30)    
 
+        background_sprite.draw(screen)
+        wall_sprites.draw(screen)
+        item_sprites.draw(screen)     
+        
+        #Refresh Screen
+        
         if collision_MacGyver_vs_boss:
             if items_picked_up == items_number:
                 pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, True)
-                main_character_sprite.update()
-                boss_sprite.update()
                 main_character_sprite.draw(screen)
                 boss_sprite.draw(screen)
                 text_sprite.draw(screen)
                 pygame.display.flip()
-                input()
+                #time.sleep(0.1)
+                input("Partie terminée : appuyez sur entrée pour quitter")
                 carryOn = False
             else:
                 pygame.sprite.groupcollide(main_character_sprite, boss_sprite, True, False)
-        #Refresh Screen
-
-
-        background_sprite.draw(screen);wall_sprites.draw(screen);main_character_sprite.draw(screen);item_sprites.draw(screen);boss_sprite.draw(screen)     
+                boss_sprite.draw(screen)
+                pygame.display.flip()
+                input("Vous êtes mort, relancez le jeu pour recommencer la partie (appuyez sur entrée pour quitter)")
+                carryOn = False
+        else:
+           	main_character_sprite.draw(screen)
+           	boss_sprite.draw(screen)
+           	pygame.display.flip()
         
-        #Refresh Screen
-        pygame.display.flip()
- 
         #Number of frames per secong e.g. 60
         clock.tick(60)
 
