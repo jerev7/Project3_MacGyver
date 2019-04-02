@@ -33,8 +33,6 @@ item_sprites = pygame.sprite.Group()
 boss_sprite = pygame.sprite.Group()
 text_sprite = pygame.sprite.Group()
 
-victory_text = objects.Text("data/win.png")
-text_sprite.add(victory_text)
 
 background = objects.Background()
 background_sprite.add(background)
@@ -63,7 +61,7 @@ def create_item(location):
         collision_nbr = 0
         # We test if the new item has not been created at the same place than another item already existing
         if pygame.sprite.spritecollide(item, item_sprites, True):
-        	collision_nbr += 1
+            collision_nbr += 1
         item_sprites.add(item)
         # Then we test if the item has not been created at the same place than walls, Mac Gyver, or the boss
         if pygame.sprite.groupcollide(item_sprites, wall_sprites, True, False):
@@ -147,6 +145,8 @@ while carryOn:
                 pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, True)
                 main_character_sprite.draw(screen)
                 boss_sprite.draw(screen)
+                victory_text = objects.Text("data/win.png")
+                text_sprite.add(victory_text)
                 text_sprite.draw(screen)
                 pygame.display.flip()
                 #time.sleep(0.1)
@@ -155,13 +155,16 @@ while carryOn:
             else:
                 pygame.sprite.groupcollide(main_character_sprite, boss_sprite, True, False)
                 boss_sprite.draw(screen)
+                loose_text = objects.Text("data/loose.jpeg")
+                text_sprite.add(loose_text)
+                text_sprite.draw(screen)
                 pygame.display.flip()
                 input("Vous êtes mort, relancez le jeu pour recommencer la partie (appuyez sur entrée pour quitter)")
                 carryOn = False
         else:
-           	main_character_sprite.draw(screen)
-           	boss_sprite.draw(screen)
-           	pygame.display.flip()
+            main_character_sprite.draw(screen)
+            boss_sprite.draw(screen)
+            pygame.display.flip()
         
         #Number of frames per secong e.g. 60
         clock.tick(60)
