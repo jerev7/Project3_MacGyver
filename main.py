@@ -67,18 +67,20 @@ def draw_walls(): # Function used to draw all the walls as sprites on the map
             wall_sprites.add(wall)
 draw_walls()
 
-def create_item1(location):
+def create_item(location): # Function used to create each item of the game
 
+    global ether
+    global plastic
+    global needle
     collision_nbr = 1
     while collision_nbr != 0:
-        global ether
-        ether = objects.Item(location)
+        item = objects.Item(location)
 
         collision_nbr = 0
         # We test if the new item has not been created at the same place than another item already existing
-        if pygame.sprite.spritecollide(ether, item_sprites, True):
+        if pygame.sprite.spritecollide(item, item_sprites, True):
             collision_nbr += 1
-        item_sprites.add(ether)
+        item_sprites.add(item)
         # Then we test if the item has not been created at the same place than walls, Mac Gyver, or the boss
         if pygame.sprite.groupcollide(item_sprites, wall_sprites, True, False):
             collision_nbr += 1
@@ -86,64 +88,20 @@ def create_item1(location):
             collision_nbr += 1
         if pygame.sprite.groupcollide(item_sprites, boss_sprite, True, False):
             collision_nbr += 1
-
-def create_item2(location):
-
-    collision_nbr = 1
-    while collision_nbr != 0:
-        global needle
-        needle = objects.Item(location)
-
-        collision_nbr = 0
-        # We test if the new item has not been created at the same place than another item already existing
-        if pygame.sprite.spritecollide(needle, item_sprites, True):
-            collision_nbr += 1
-        item_sprites.add(needle)
-        # Then we test if the item has not been created at the same place than walls, Mac Gyver, or the boss
-        if pygame.sprite.groupcollide(item_sprites, wall_sprites, True, False):
-            collision_nbr += 1
-        if pygame.sprite.groupcollide(item_sprites, main_character_sprite, True, False):
-            collision_nbr += 1
-        if pygame.sprite.groupcollide(item_sprites, boss_sprite, True, False):
-            collision_nbr += 1
-    
-def create_item3(location):
-
-    collision_nbr = 1
-    while collision_nbr != 0:
-        global plastic
-        plastic = objects.Item(location)
-
-        collision_nbr = 0
-        # We test if the new item has not been created at the same place than another item already existing
-        if pygame.sprite.spritecollide(plastic, item_sprites, True):
-            collision_nbr += 1
-        item_sprites.add(plastic)
-        # Then we test if the item has not been created at the same place than walls, Mac Gyver, or the boss
-        if pygame.sprite.groupcollide(item_sprites, wall_sprites, True, False):
-            collision_nbr += 1
-        if pygame.sprite.groupcollide(item_sprites, main_character_sprite, True, False):
-            collision_nbr += 1
-        if pygame.sprite.groupcollide(item_sprites, boss_sprite, True, False):
-            collision_nbr += 1
+    if location == "data/ether2.png":
+        ether = item
+    elif location == "data/seringue2.png":
+        needle = item
+    else:
+        plastic = item
 
 
-create_item1("data/ether2.png")
+create_item("data/ether2.png")
 items_number += 1
-create_item2("data/seringue2.png")
+create_item("data/seringue2.png")
 items_number += 1
-create_item3("data/tube_plastique2.png")
+create_item("data/tube_plastique2.png")
 items_number += 1
-
-
-def write_words(word, x_starting_position, y_starting_position):
-    for letter in word:
-        if letter == " ":
-            x_starting_position += 30
-        else:
-            each_letter = objects.Letters(letter, x_starting_position, y_starting_position)
-            letter_sprites.add(each_letter)
-            x_starting_position += 30
 
 
 carryOn = True
@@ -247,21 +205,6 @@ while carryOn:
             elif moved_right == 1:
                 MacGyver.moveLeft(30)
 
-        """if collision_MacGyver_vs_item:
-            pygame.event.set_blocked(pygame.KEYDOWN)
-            items_picked_up += 1
-            if 
-            if items_picked_up == 1: 
-                write_words("I OF III", 120, 180)
-            elif items_picked_up == 2:
-                write_words("II OF III", 90, 180)
-            elif items_picked_up == 3:
-                write_words("III OF III", 60, 180)
-            letter_sprites.draw(screen)            
-            pygame.display.flip()
-            pygame.time.wait(1500)
-            pygame.event.set_allowed(pygame.KEYDOWN)"""  
-
         background_sprite.draw(screen)
         wall_sprites.draw(screen)
         item_sprites.draw(screen)
@@ -276,7 +219,7 @@ while carryOn:
                 text_sprite.add(victory_text)
                 text_sprite.draw(screen)
                 pygame.display.flip()
-                input("The game is over : press Enter to leave")
+                input("With all the items you found, you managed to make the keeper fall asleep. You escaped from the labyrinth, well done ! (press Enter to leave)")
                 carryOn = False
             else:
                 pygame.sprite.groupcollide(main_character_sprite, boss_sprite, True, False)
@@ -289,7 +232,7 @@ while carryOn:
                 text_sprite.draw(screen)
                 pygame.display.flip()
                 carryOn = False
-                input("You are dead cause you haven't collected all the needed items to defeat the keeper, leave now by pressing Enter and start again !!")
+                input("You are dead cause you haven't found all the needed items to defeat the keeper, leave now by pressing Enter and start again !!")
         else:
             main_character_sprite.draw(screen)
             boss_sprite.draw(screen)

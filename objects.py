@@ -40,6 +40,7 @@ class Background(pygame.sprite.Sprite):
         self.rect.y = 0       
 
 class Wall(pygame.sprite.Sprite):
+    
     def __init__(self, position_x, position_y):
 
         super().__init__()
@@ -63,6 +64,7 @@ class Item(pygame.sprite.Sprite):
         self.rect.y = random.randrange(0, 450, 30)       
 
 class Boss(pygame.sprite.Sprite):
+    
     def __init__(self):
 
         super().__init__()
@@ -73,6 +75,7 @@ class Boss(pygame.sprite.Sprite):
         self.rect.y = 420
 
 class Text(pygame.sprite.Sprite):
+    
     def __init__(self, location):
 
         super().__init__()
@@ -83,6 +86,7 @@ class Text(pygame.sprite.Sprite):
         self.rect.y = 150
 
 class Blood(pygame.sprite.Sprite):
+    
     def __init__(self, x_position):
 
         super().__init__()
@@ -93,17 +97,8 @@ class Blood(pygame.sprite.Sprite):
         self.rect.x = x_position
         self.rect.y = 420
 
-class Letters(pygame.sprite.Sprite):
-    def __init__(self, letter, x_position, y_position):
-
-        super().__init__()
-        chargement_image = pygame.image.load("data/alphabet/" + letter + ".png").convert_alpha()
-        self.image = pygame.transform.scale(chargement_image, (30, 30))
-        self.rect = self.image.get_rect()
-        self.rect.x = int(x_position)
-        self.rect.y = int(y_position)
-
 class Bag(pygame.sprite.Sprite):
+    
     def __init__(self, location):
 
         super().__init__()
