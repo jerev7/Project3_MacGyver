@@ -42,6 +42,10 @@ boss_sprite = pygame.sprite.Group()
 text_sprite = pygame.sprite.Group()
 blood_sprite = pygame.sprite.Group()
 letter_sprites = pygame.sprite.Group()
+bag_sprite = pygame.sprite.GroupSingle()
+
+bag_empty = objects.Bag("data/bags/bag_empty.png")
+bag_sprite.add(bag_empty)
 
 background = objects.Background()
 background_sprite.add(background)
@@ -63,16 +67,18 @@ def draw_walls(): # Function used to draw all the walls as sprites on the map
             wall_sprites.add(wall)
 draw_walls()
 
-def create_item(location):
+def create_item1(location):
 
     collision_nbr = 1
     while collision_nbr != 0:
-        item = objects.Item(location)
+        global ether
+        ether = objects.Item(location)
+
         collision_nbr = 0
         # We test if the new item has not been created at the same place than another item already existing
-        if pygame.sprite.spritecollide(item, item_sprites, True):
+        if pygame.sprite.spritecollide(ether, item_sprites, True):
             collision_nbr += 1
-        item_sprites.add(item)
+        item_sprites.add(ether)
         # Then we test if the item has not been created at the same place than walls, Mac Gyver, or the boss
         if pygame.sprite.groupcollide(item_sprites, wall_sprites, True, False):
             collision_nbr += 1
@@ -81,11 +87,52 @@ def create_item(location):
         if pygame.sprite.groupcollide(item_sprites, boss_sprite, True, False):
             collision_nbr += 1
 
-create_item("data/ether.png")
+def create_item2(location):
+
+    collision_nbr = 1
+    while collision_nbr != 0:
+        global needle
+        needle = objects.Item(location)
+
+        collision_nbr = 0
+        # We test if the new item has not been created at the same place than another item already existing
+        if pygame.sprite.spritecollide(needle, item_sprites, True):
+            collision_nbr += 1
+        item_sprites.add(needle)
+        # Then we test if the item has not been created at the same place than walls, Mac Gyver, or the boss
+        if pygame.sprite.groupcollide(item_sprites, wall_sprites, True, False):
+            collision_nbr += 1
+        if pygame.sprite.groupcollide(item_sprites, main_character_sprite, True, False):
+            collision_nbr += 1
+        if pygame.sprite.groupcollide(item_sprites, boss_sprite, True, False):
+            collision_nbr += 1
+    
+def create_item3(location):
+
+    collision_nbr = 1
+    while collision_nbr != 0:
+        global plastic
+        plastic = objects.Item(location)
+
+        collision_nbr = 0
+        # We test if the new item has not been created at the same place than another item already existing
+        if pygame.sprite.spritecollide(plastic, item_sprites, True):
+            collision_nbr += 1
+        item_sprites.add(plastic)
+        # Then we test if the item has not been created at the same place than walls, Mac Gyver, or the boss
+        if pygame.sprite.groupcollide(item_sprites, wall_sprites, True, False):
+            collision_nbr += 1
+        if pygame.sprite.groupcollide(item_sprites, main_character_sprite, True, False):
+            collision_nbr += 1
+        if pygame.sprite.groupcollide(item_sprites, boss_sprite, True, False):
+            collision_nbr += 1
+
+
+create_item1("data/ether2.png")
 items_number += 1
-create_item("data/seringue.png")
+create_item2("data/seringue2.png")
 items_number += 1
-create_item("data/tube_plastique.png")
+create_item3("data/tube_plastique2.png")
 items_number += 1
 
 
@@ -135,10 +182,60 @@ while carryOn:
         wall_sprites.update()
         item_sprites.update()
         boss_sprite.update()
+        bag_sprite.update()
+
+
+        # Finding every item picked up and updating bag information
+
+        if pygame.sprite.Sprite.alive(ether):
+            if pygame.sprite.Sprite.alive(plastic):
+                if pygame.sprite.Sprite.alive(needle):
+                    bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
+                else:
+                    bag_sprite.add(objects.Bag("data/bags/needle.png"))
+            elif pygame.sprite.Sprite.alive(needle):
+                if pygame.sprite.Sprite.alive(plastic):
+                    bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
+                else:
+                    bag_sprite.add(objects.Bag("data/bags/plastic.png"))
+            else:
+                bag_sprite.add(objects.Bag("data/bags/needle_plastic.png"))
+        elif pygame.sprite.Sprite.alive(needle):
+            if pygame.sprite.Sprite.alive(ether):
+                if pygame.sprite.Sprite.alive(plastic):
+                    bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
+                else:
+                    bag_sprite.add(objects.Bag("data/bags/plastic.png"))
+            elif pygame.sprite.Sprite.alive(plastic):
+                if pygame.sprite.Sprite.alive(ether):
+                    bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
+                else:
+                    bag_sprite.add(objects.Bag("data/bags/ether.png"))
+            else:
+                bag_sprite.add(objects.Bag("data/bags/plastic_ether.png"))
+        elif pygame.sprite.Sprite.alive(plastic):
+            if pygame.sprite.Sprite.alive(needle):
+                if pygame.sprite.Sprite.alive(ether):
+                    bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
+                else:
+                    bag_sprite.add(objects.Bag("data/bags/ether.png"))
+            elif pygame.sprite.Sprite.alive(ether):
+                if pygame.sprite.Sprite.alive(needle):
+                    bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
+                else:
+                    bag_sprite.add(objects.Bag("data/bags/needle.png"))
+            else:
+                bag_sprite.add(objects.Bag("data/bags/needle_ether.png"))
+        else:
+            bag_sprite.add(objects.Bag("data/bags/bag_full.png"))
+
         
         collision_MacGyver_vs_boss = pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, False)
         collision_MacGyver_vs_item = pygame.sprite.groupcollide(main_character_sprite, item_sprites, False, True)
         collision_MacGyver_vs_walls = pygame.sprite.groupcollide(main_character_sprite, wall_sprites, False, False)
+
+        if collision_MacGyver_vs_item:
+            items_picked_up += 1
         
         if collision_MacGyver_vs_walls:
             if moved_down == 1:
@@ -150,10 +247,10 @@ while carryOn:
             elif moved_right == 1:
                 MacGyver.moveLeft(30)
 
-        if collision_MacGyver_vs_item:
+        """if collision_MacGyver_vs_item:
             pygame.event.set_blocked(pygame.KEYDOWN)
             items_picked_up += 1
-            write_words("ITEMS PICKED UP", 0, 120)
+            if 
             if items_picked_up == 1: 
                 write_words("I OF III", 120, 180)
             elif items_picked_up == 2:
@@ -163,12 +260,13 @@ while carryOn:
             letter_sprites.draw(screen)            
             pygame.display.flip()
             pygame.time.wait(1500)
-            pygame.event.set_allowed(pygame.KEYDOWN)  
+            pygame.event.set_allowed(pygame.KEYDOWN)"""  
 
         background_sprite.draw(screen)
         wall_sprites.draw(screen)
         item_sprites.draw(screen)
-        
+        bag_sprite.draw(screen)
+
         if collision_MacGyver_vs_boss:
             if items_picked_up == items_number:
                 pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, True)

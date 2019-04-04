@@ -4,10 +4,6 @@ import pygame
 import random
 
 
-
-
-
-
 class MainCharacter(pygame.sprite.Sprite):
 
     def __init__(self):
@@ -60,7 +56,7 @@ class Item(pygame.sprite.Sprite):
 
         super().__init__()
 
-        chargement_image = pygame.image.load(file_location).convert()
+        chargement_image = pygame.image.load(file_location).convert_alpha()
         self.image = pygame.transform.scale(chargement_image, (30, 30))
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(0, 450, 30)
@@ -106,3 +102,13 @@ class Letters(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = int(x_position)
         self.rect.y = int(y_position)
+
+class Bag(pygame.sprite.Sprite):
+    def __init__(self, location):
+
+        super().__init__()
+        chargement_image = pygame.image.load(location).convert_alpha()
+        self.image = pygame.transform.scale(chargement_image, (120, 120))
+        self.rect = self.image.get_rect()
+        self.rect.x = 0
+        self.rect.y = 350
