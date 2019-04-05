@@ -27,8 +27,10 @@ wall_position = {0 : [90, 120, 150, 270, 300, 330, 390, 420], 30 : [0, 30, 90, 2
 
 pygame.init()
 
+# We hide the mouse
+pygame.mouse.set_visible(0)
 
-screen = pygame.display.set_mode((size), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((size), pygame.RESIZABLE)
 #pygame.mouse.set_visible(0)
 
 #Game title
