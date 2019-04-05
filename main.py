@@ -28,7 +28,7 @@ wall_position = {0 : [90, 120, 150, 270, 300, 330, 390, 420], 30 : [0, 30, 90, 2
 pygame.init()
 
 
-screen = pygame.display.set_mode((size), pygame.RESIZABLE)
+screen = pygame.display.set_mode((size), pygame.FULLSCREEN)
 
 #Game title
 pygame.display.set_caption("Mac Gyver Labyrinthe")
@@ -215,11 +215,14 @@ while carryOn:
                 pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, True)
                 main_character_sprite.draw(screen)
                 boss_sprite.draw(screen)
-                victory_text = objects.Text("data/win.png")
+                victory_image = objects.Text("data/win.png", 100, 100, 150, 150)
+                text_sprite.add(victory_image)
+                victory_text = objects.Text("data/victory_text.png", 400, 210, 30, 30)
                 text_sprite.add(victory_text)
                 text_sprite.draw(screen)
                 pygame.display.flip()
-                input("With all the items you found, you managed to make the keeper fall asleep. You escaped from the labyrinth, well done ! (press Enter to leave)")
+                pygame.time.wait(7000)
+                #input("With all the items you found, you managed to make the keeper fall asleep. You escaped from the labyrinth, well done ! (press Enter to leave)")
                 carryOn = False
             else:
                 pygame.sprite.groupcollide(main_character_sprite, boss_sprite, True, False)
@@ -227,12 +230,15 @@ while carryOn:
                 blood = objects.Blood(390)
                 blood_sprite.add(blood)
                 blood_sprite.draw(screen)
-                loose_text = objects.Text("data/loose.jpeg")
-                text_sprite.add(loose_text)
+                defeat_image = objects.Text("data/loose.jpeg", 100, 100, 150, 150)
+                text_sprite.add(defeat_image)
+                defeat_text = objects.Text("data/defeat_text.png", 400, 240, 30, 30)
+                text_sprite.add(defeat_text)
                 text_sprite.draw(screen)
                 pygame.display.flip()
+                pygame.time.wait(7000)
                 carryOn = False
-                input("You are dead cause you haven't found all the needed items to defeat the keeper, leave now by pressing Enter and start again !!")
+                #input("You are dead cause you haven't found all the needed items to defeat the keeper, leave now by pressing Enter and start again !!")
         else:
             main_character_sprite.draw(screen)
             boss_sprite.draw(screen)

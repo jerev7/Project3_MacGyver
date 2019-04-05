@@ -76,14 +76,14 @@ class Boss(pygame.sprite.Sprite):
 
 class Text(pygame.sprite.Sprite):
     
-    def __init__(self, location):
+    def __init__(self, location, scale_x, scale_y, rect_x, rect_y):
 
         super().__init__()
         chargement_image = pygame.image.load(location).convert_alpha()
-        self.image = pygame.transform.scale(chargement_image, (100, 100))
+        self.image = pygame.transform.scale(chargement_image, (scale_x, scale_y))
         self.rect = self.image.get_rect()
-        self.rect.x = 150
-        self.rect.y = 150
+        self.rect.x = rect_x
+        self.rect.y = rect_y
 
 class Blood(pygame.sprite.Sprite):
     
