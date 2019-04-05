@@ -30,8 +30,7 @@ pygame.init()
 # We hide the mouse
 pygame.mouse.set_visible(0)
 
-screen = pygame.display.set_mode((size), pygame.RESIZABLE)
-#pygame.mouse.set_visible(0)
+screen = pygame.display.set_mode((size), pygame.FULLSCREEN)
 
 #Game title
 pygame.display.set_caption("Mac Gyver Labyrinthe")
@@ -44,10 +43,6 @@ item_sprites = pygame.sprite.Group()
 boss_sprite = pygame.sprite.Group()
 text_sprite = pygame.sprite.Group()
 blood_sprite = pygame.sprite.Group()
-bag_sprite = pygame.sprite.GroupSingle()
-
-bag_empty = objects.Bag("data/bags/bag_empty.png")
-bag_sprite.add(bag_empty)
 
 background = objects.Background()
 background_sprite.add(background)
@@ -55,10 +50,8 @@ background_sprite.add(background)
 MacGyver = objects.MainCharacter()
 main_character_sprite.add(MacGyver)
 
-
 boss = objects.Boss()
 boss_sprite.add(boss)
-
 
 
 def draw_walls(): # Function used to draw all the walls as sprites on the map
@@ -90,12 +83,6 @@ def create_item(location): # Function used to create each item of the game
         if pygame.sprite.groupcollide(item_sprites, boss_sprite, True, False):
             collision_nbr += 1
     return item
-    # if location == "data/ether2.png":
-    #     ether = item
-    # elif location == "data/seringue2.png":
-    #     needle = item
-    # else:
-    #     plastic = item
 
 ether = create_item("data/ether2.png")
 items_number += 1
@@ -141,52 +128,53 @@ while carryOn:
         wall_sprites.update()
         item_sprites.update()
         boss_sprite.update()
-        bag_sprite.update()
 
 
-        # Finding every item picked up and updating bag information
 
-        if pygame.sprite.Sprite.alive(ether):
-            if pygame.sprite.Sprite.alive(plastic):
-                if pygame.sprite.Sprite.alive(needle):
-                    bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
-                else:
-                    bag_sprite.add(objects.Bag("data/bags/needle.png"))
-            elif pygame.sprite.Sprite.alive(needle):
-                if pygame.sprite.Sprite.alive(plastic):
-                    bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
-                else:
-                    bag_sprite.add(objects.Bag("data/bags/plastic.png"))
-            else:
-                bag_sprite.add(objects.Bag("data/bags/needle_plastic.png"))
-        elif pygame.sprite.Sprite.alive(needle):
-            if pygame.sprite.Sprite.alive(ether):
-                if pygame.sprite.Sprite.alive(plastic):
-                    bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
-                else:
-                    bag_sprite.add(objects.Bag("data/bags/plastic.png"))
-            elif pygame.sprite.Sprite.alive(plastic):
-                if pygame.sprite.Sprite.alive(ether):
-                    bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
-                else:
-                    bag_sprite.add(objects.Bag("data/bags/ether.png"))
-            else:
-                bag_sprite.add(objects.Bag("data/bags/plastic_ether.png"))
-        elif pygame.sprite.Sprite.alive(plastic):
-            if pygame.sprite.Sprite.alive(needle):
-                if pygame.sprite.Sprite.alive(ether):
-                    bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
-                else:
-                    bag_sprite.add(objects.Bag("data/bags/ether.png"))
-            elif pygame.sprite.Sprite.alive(ether):
-                if pygame.sprite.Sprite.alive(needle):
-                    bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
-                else:
-                    bag_sprite.add(objects.Bag("data/bags/needle.png"))
-            else:
-                bag_sprite.add(objects.Bag("data/bags/needle_ether.png"))
-        else:
-            bag_sprite.add(objects.Bag("data/bags/bag_full.png"))
+
+        # # Finding every item picked up and updating bag information
+
+        # if pygame.sprite.Sprite.alive(ether):
+        #     if pygame.sprite.Sprite.alive(plastic):
+        #         if pygame.sprite.Sprite.alive(needle):
+        #             bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
+        #         else:
+        #             bag_sprite.add(objects.Bag("data/bags/needle.png"))
+        #     elif pygame.sprite.Sprite.alive(needle):
+        #         if pygame.sprite.Sprite.alive(plastic):
+        #             bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
+        #         else:
+        #             bag_sprite.add(objects.Bag("data/bags/plastic.png"))
+        #     else:
+        #         bag_sprite.add(objects.Bag("data/bags/needle_plastic.png"))
+        # elif pygame.sprite.Sprite.alive(needle):
+        #     if pygame.sprite.Sprite.alive(ether):
+        #         if pygame.sprite.Sprite.alive(plastic):
+        #             bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
+        #         else:
+        #             bag_sprite.add(objects.Bag("data/bags/plastic.png"))
+        #     elif pygame.sprite.Sprite.alive(plastic):
+        #         if pygame.sprite.Sprite.alive(ether):
+        #             bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
+        #         else:
+        #             bag_sprite.add(objects.Bag("data/bags/ether.png"))
+        #     else:
+        #         bag_sprite.add(objects.Bag("data/bags/plastic_ether.png"))
+        # elif pygame.sprite.Sprite.alive(plastic):
+        #     if pygame.sprite.Sprite.alive(needle):
+        #         if pygame.sprite.Sprite.alive(ether):
+        #             bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
+        #         else:
+        #             bag_sprite.add(objects.Bag("data/bags/ether.png"))
+        #     elif pygame.sprite.Sprite.alive(ether):
+        #         if pygame.sprite.Sprite.alive(needle):
+        #             bag_sprite.add(objects.Bag("data/bags/bag_empty.png"))
+        #         else:
+        #             bag_sprite.add(objects.Bag("data/bags/needle.png"))
+        #     else:
+        #         bag_sprite.add(objects.Bag("data/bags/needle_ether.png"))
+        # else:
+        #     bag_sprite.add(objects.Bag("data/bags/bag_full.png"))
 
         
         collision_MacGyver_vs_boss = pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, False)
@@ -209,8 +197,40 @@ while carryOn:
         background_sprite.draw(screen)
         wall_sprites.draw(screen)
         item_sprites.draw(screen)
-        bag_sprite.draw(screen)
+        
+        pygame.font.init()
 
+        bag_text = "Items picked up :"
+        ether_full = "Ether : 1/1"
+        ether_empty = "Ether : 0/1"
+        plastic_empty = "Plastic 0/1"
+        plastic_full = "Plastic : 1/1"
+        needle_empty = "Needle : 0/1"
+        needle_full = "Needle : 1/1"
+
+        myfont = pygame.font.SysFont('Comic Sans MS', 30)
+        screen.blit(myfont.render(bag_text, False, (0, 0, 0)), (0, 330))
+
+        if pygame.sprite.Sprite.alive(ether):
+            screen.blit(myfont.render(ether_empty, False, (0, 0, 0)), (0, 360))
+        else:
+            screen.blit(myfont.render(ether_full, False, (0, 0, 0)), (0, 360))
+        if pygame.sprite.Sprite.alive(plastic):
+            screen.blit(myfont.render(plastic_empty, False, (0, 0, 0)), (0, 390))
+        else:
+            screen.blit(myfont.render(plastic_full, False, (0, 0, 0)), (0, 390))
+        if pygame.sprite.Sprite.alive(needle):
+            screen.blit(myfont.render(needle_empty, False, (0, 0, 0)), (0, 420))
+        else:
+            screen.blit(myfont.render(needle_full, False, (0, 0, 0)), (0, 420))
+
+        myfont2 = pygame.font.SysFont('Comic Sans MS', 22, True)
+
+        victory_sentence1 = "You managed to make the keeper fall asleep with all"
+        victory_sentence2 = "items you found and escaped the labyrinth !!" 
+        defeat_sentence1 = "The keeper was awake and killed you ! You need"
+        defeat_sentence2 = "to find all items before trying to escape !"
+        
         if collision_MacGyver_vs_boss:
             if items_picked_up == items_number:
                 pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, True)
@@ -218,9 +238,9 @@ while carryOn:
                 boss_sprite.draw(screen)
                 victory_image = objects.Text("data/win.png", 100, 100, 150, 150)
                 text_sprite.add(victory_image)
-                victory_text = objects.Text("data/victory_text.png", 400, 210, 30, 30)
-                text_sprite.add(victory_text)
                 text_sprite.draw(screen)
+                screen.blit(myfont2.render(victory_sentence1, False, (0, 0, 0), (255, 255, 255)), (0, 0))
+                screen.blit(myfont2.render(victory_sentence2, False, (0, 0, 0), (255, 255, 255)), (0, 30))
                 pygame.display.flip()
                 pygame.time.wait(7000)
                 carryOn = False
@@ -232,9 +252,9 @@ while carryOn:
                 blood_sprite.draw(screen)
                 defeat_image = objects.Text("data/loose.jpeg", 100, 100, 150, 150)
                 text_sprite.add(defeat_image)
-                defeat_text = objects.Text("data/defeat_text.png", 400, 240, 30, 30)
-                text_sprite.add(defeat_text)
                 text_sprite.draw(screen)
+                screen.blit(myfont2.render(defeat_sentence1, False, (0, 0, 0), (255, 255, 255)), (0, 0))
+                screen.blit(myfont2.render(defeat_sentence2, False, (0, 0, 0), (255, 255, 255)), (0, 30))
                 pygame.display.flip()
                 pygame.time.wait(7000)
                 carryOn = False
