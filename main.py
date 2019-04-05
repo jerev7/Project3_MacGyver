@@ -71,9 +71,6 @@ draw_walls()
 
 def create_item(location): # Function used to create each item of the game
 
-    global ether
-    global plastic
-    global needle
     collision_nbr = 1
     while collision_nbr != 0:
         item = objects.Item(location)
@@ -92,19 +89,19 @@ def create_item(location): # Function used to create each item of the game
             collision_nbr += 1
         if pygame.sprite.groupcollide(item_sprites, boss_sprite, True, False):
             collision_nbr += 1
-    if location == "data/ether2.png":
-        ether = item
-    elif location == "data/seringue2.png":
-        needle = item
-    else:
-        plastic = item
+    return item
+    # if location == "data/ether2.png":
+    #     ether = item
+    # elif location == "data/seringue2.png":
+    #     needle = item
+    # else:
+    #     plastic = item
 
-
-create_item("data/ether2.png")
+ether = create_item("data/ether2.png")
 items_number += 1
-create_item("data/seringue2.png")
+needle = create_item("data/seringue2.png")
 items_number += 1
-create_item("data/tube_plastique2.png")
+plastic = create_item("data/tube_plastique2.png")
 items_number += 1
 
 
