@@ -29,6 +29,7 @@ pygame.init()
 
 
 screen = pygame.display.set_mode((size), pygame.FULLSCREEN)
+#pygame.mouse.set_visible(0)
 
 #Game title
 pygame.display.set_caption("Mac Gyver Labyrinthe")
@@ -41,7 +42,6 @@ item_sprites = pygame.sprite.Group()
 boss_sprite = pygame.sprite.Group()
 text_sprite = pygame.sprite.Group()
 blood_sprite = pygame.sprite.Group()
-letter_sprites = pygame.sprite.Group()
 bag_sprite = pygame.sprite.GroupSingle()
 
 bag_empty = objects.Bag("data/bags/bag_empty.png")
@@ -75,12 +75,14 @@ def create_item(location): # Function used to create each item of the game
     collision_nbr = 1
     while collision_nbr != 0:
         item = objects.Item(location)
+        
 
         collision_nbr = 0
         # We test if the new item has not been created at the same place than another item already existing
         if pygame.sprite.spritecollide(item, item_sprites, True):
             collision_nbr += 1
-        item_sprites.add(item)
+        else:
+            item_sprites.add(item)
         # Then we test if the item has not been created at the same place than walls, Mac Gyver, or the boss
         if pygame.sprite.groupcollide(item_sprites, wall_sprites, True, False):
             collision_nbr += 1
@@ -222,7 +224,6 @@ while carryOn:
                 text_sprite.draw(screen)
                 pygame.display.flip()
                 pygame.time.wait(7000)
-                #input("With all the items you found, you managed to make the keeper fall asleep. You escaped from the labyrinth, well done ! (press Enter to leave)")
                 carryOn = False
             else:
                 pygame.sprite.groupcollide(main_character_sprite, boss_sprite, True, False)
@@ -238,7 +239,7 @@ while carryOn:
                 pygame.display.flip()
                 pygame.time.wait(7000)
                 carryOn = False
-                #input("You are dead cause you haven't found all the needed items to defeat the keeper, leave now by pressing Enter and start again !!")
+                
         else:
             main_character_sprite.draw(screen)
             boss_sprite.draw(screen)
