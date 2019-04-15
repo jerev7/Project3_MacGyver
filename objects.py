@@ -33,7 +33,7 @@ class Background(pygame.sprite.Sprite):
     def __init__(self):
 
         super().__init__()
-        chargement_image = pygame.image.load("data/map.png").convert()
+        chargement_image = pygame.image.load("data/fond.jpg").convert()
         self.image = pygame.transform.scale(chargement_image, (450, 450))
         self.rect = self.image.get_rect()
         self.rect.x = 0
@@ -96,14 +96,3 @@ class Blood(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x_position
         self.rect.y = 420
-
-class Bag(pygame.sprite.Sprite):
-    
-    def __init__(self, location):
-
-        super().__init__()
-        chargement_image = pygame.image.load(location).convert_alpha()
-        self.image = pygame.transform.scale(chargement_image, (120, 120))
-        self.rect = self.image.get_rect()
-        self.rect.x = 0
-        self.rect.y = 350

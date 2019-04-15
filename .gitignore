@@ -1,6 +1,4 @@
 env/
 data/
 __pycache__/
-build/
-dist/
-main.spec
+
