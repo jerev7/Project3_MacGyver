@@ -5,11 +5,10 @@ import pygame
 import objects
 
 
-
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-SCREENWIDTH=450
-SCREENHEIGHT=450
+SCREENWIDTH = 450
+SCREENHEIGHT = 450
  
 size = (SCREENWIDTH, SCREENHEIGHT)
 
@@ -17,13 +16,14 @@ items_picked_up = 0
 items_number = 0
 
 # For the walls position, keys will be the x coordinates and values will be the y coordinates.
-wall_position = {0 : [90, 120, 150, 270, 300, 330, 390, 420], 30 : [0, 30, 90, 210, 270, 330, 390, 420], 60 : [30, 90, 150, 180, 210, 270, 420],
-90 : [90, 180, 330, 360, 420], 120 : [30, 60, 90, 120, 180, 210, 240, 270, 330, 360],
-150 : [240, 360], 180 : [0, 30, 90, 120, 150, 240, 300, 360, 390, 420],
-210 :[240, 300], 240 : [30, 60, 90, 120, 150, 180, 210, 240, 300, 330, 360, 390],
-270: [30, 120, 240, 390], 300 : [30, 90, 180, 240, 270, 300, 330, 360, 390],
-330 : [120, 180], 360 :[0, 60, 90, 120, 180, 240, 300, 330, 360, 390, 420], 390 : [0, 120, 240],
-420 :[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360, 390]}
+wall_position = {0: [90, 120, 150, 270, 300, 330, 390, 420], 30: [0, 30, 90, 210, 270, 330, 390, 420],
+60: [30, 90, 150, 180, 210, 270, 420],
+90: [90, 180, 330, 360, 420], 120: [30, 60, 90, 120, 180, 210, 240, 270, 330, 360],
+150: [240, 360], 180: [0, 30, 90, 120, 150, 240, 300, 360, 390, 420],
+210: [240, 300], 240: [30, 60, 90, 120, 150, 180, 210, 240, 300, 330, 360, 390],
+270: [30, 120, 240, 390], 300: [30, 90, 180, 240, 270, 300, 330, 360, 390],
+330: [120, 180], 360: [0, 60, 90, 120, 180, 240, 300, 330, 360, 390, 420], 390: [0, 120, 240],
+420: [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360, 390]}
 
 pygame.init()
 
@@ -35,7 +35,7 @@ screen = pygame.display.set_mode((size), pygame.FULLSCREEN)
 #Game title
 pygame.display.set_caption("Mac Gyver Labyrinthe")
 
-#creating all different sprite groups.
+#Creating all different sprite groups.
 background_sprite = pygame.sprite.Group()
 main_character_sprite = pygame.sprite.Group()
 wall_sprites = pygame.sprite.Group()
@@ -43,6 +43,7 @@ item_sprites = pygame.sprite.Group()
 boss_sprite = pygame.sprite.Group()
 text_sprite = pygame.sprite.Group()
 blood_sprite = pygame.sprite.Group()
+
 
 background = objects.Background()
 background_sprite.add(background)
@@ -54,28 +55,25 @@ boss = objects.Boss()
 boss_sprite.add(boss)
 
 
-def draw_walls(): # Function used to draw all the walls as sprites on the map
-       
+def draw_walls(): #Function used to draw all the walls as sprites on the map       
     for x, y_list in wall_position.items():
         for y in y_list:
             wall = objects.Wall(x, y)
             wall_sprites.add(wall)
+
 draw_walls()
 
-def create_item(location): # Function used to create each item of the game
-
+def create_item(location): #Function used to create each item of the game
     collision_nbr = 1
     while collision_nbr != 0:
         item = objects.Item(location)
-        
-
         collision_nbr = 0
-        # We test if the new item has not been created at the same place than another item already existing
+        #We test if the new item has not been created at the same place than another item already existing
         if pygame.sprite.spritecollide(item, item_sprites, True):
             collision_nbr += 1
         else:
             item_sprites.add(item)
-        # Then we test if the item has not been created at the same place than walls, Mac Gyver, or the boss
+        #Then we test if the item has not been created at the same place than walls, Mac Gyver, or the boss
         if pygame.sprite.groupcollide(item_sprites, wall_sprites, True, False):
             collision_nbr += 1
         if pygame.sprite.groupcollide(item_sprites, main_character_sprite, True, False):
@@ -152,6 +150,7 @@ while carryOn:
         
         pygame.font.init()
 
+        #some variables for each line of the inventory 
         bag_text = "Items picked up :"
         ether_full = "Ether : 1/1"
         ether_empty = "Ether : 0/1"
@@ -163,6 +162,7 @@ while carryOn:
         myfont = pygame.font.SysFont('Comic Sans MS', 30)
         screen.blit(myfont.render(bag_text, False, (0, 0, 0)), (0, 330))
 
+        #it will determine how the inventory is displayed depending on which item the user has already picked up
         if pygame.sprite.Sprite.alive(ether):
             screen.blit(myfont.render(ether_empty, False, (0, 0, 0)), (0, 360))
         else:
@@ -176,13 +176,14 @@ while carryOn:
         else:
             screen.blit(myfont.render(needle_full, False, (0, 0, 0)), (0, 420))
 
+        
         myfont2 = pygame.font.SysFont('Comic Sans MS', 22, True)
-
         victory_sentence1 = "You managed to make the keeper fall asleep with all"
         victory_sentence2 = "items you found and escaped the labyrinth !!" 
         defeat_sentence1 = "The keeper was awake and killed you ! You need"
         defeat_sentence2 = "to find all items before trying to escape !"
         
+        #those are the two ending situation, defeat or victory
         if collision_mac_gyver_vs_boss:
             if items_picked_up == items_number:
                 pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, True)
@@ -210,7 +211,7 @@ while carryOn:
                 pygame.display.flip()
                 pygame.time.wait(7000)
                 carryOn = False
-                
+        #if it's not ended then program goes on        
         else:
             main_character_sprite.draw(screen)
             boss_sprite.draw(screen)
