@@ -13,4 +13,9 @@ pip install -r requirements.txt
 * If this command does not work, it means that you need to install pip before. You can find some help here :
 https://pip.pypa.io/en/stable/installing/
 
-Have fun ! 
+3) Make sure you have in the same folder :
+	- One file named main.py
+	- One named objects.py
+	- One folder named data/
+
+4) Execute main.py 
