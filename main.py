@@ -9,6 +9,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 SCREENWIDTH = 450
 SCREENHEIGHT = 450
+BLOCK = 30
  
 size = (SCREENWIDTH, SCREENHEIGHT)
 
@@ -41,8 +42,8 @@ main_character_sprite = pygame.sprite.Group()
 wall_sprites = pygame.sprite.Group()
 item_sprites = pygame.sprite.Group()
 boss_sprite = pygame.sprite.Group()
-text_sprite = pygame.sprite.Group()
 blood_sprite = pygame.sprite.Group()
+text_sprite = pygame.sprite.Group()
 
 
 background = objects.Background()
@@ -104,20 +105,20 @@ while carryOn:
             if event.key == pygame.K_ESCAPE:
                 carryOn = False
             if event.key == pygame.K_DOWN:
-                if (mac_gyver.rect.y + 30) < SCREENHEIGHT:
-                    mac_gyver.moveDown(30)
+                if (mac_gyver.rect.y + BLOCK) < SCREENHEIGHT:
+                    mac_gyver.moveDown(BLOCK)
                     moved_down += 1
             if event.key == pygame.K_UP:
-                if (mac_gyver.rect.y - 30) >= 0: 
-                    mac_gyver.moveUp(30)
+                if (mac_gyver.rect.y - BLOCK) >= 0: 
+                    mac_gyver.moveUp(BLOCK)
                     moved_up += 1
             if event.key == pygame.K_LEFT:
-                if (mac_gyver.rect.x - 30) >= 0:
-                    mac_gyver.moveLeft(30)
+                if (mac_gyver.rect.x - BLOCK) >= 0:
+                    mac_gyver.moveLeft(BLOCK)
                     moved_left += 1
             if event.key == pygame.K_RIGHT:
-                if (mac_gyver.rect.x + 30) < SCREENWIDTH:
-                    mac_gyver.moveRight(30)
+                if (mac_gyver.rect.x + BLOCK) < SCREENWIDTH:
+                    mac_gyver.moveRight(BLOCK)
                     moved_right += 1
                 
         #updating the sprites
@@ -136,13 +137,13 @@ while carryOn:
         
         if collision_mac_gyver_vs_walls:
             if moved_down == 1:
-                mac_gyver.moveUp(30)
+                mac_gyver.moveUp(BLOCK)
             elif moved_up == 1:
-                mac_gyver.moveDown(30)
+                mac_gyver.moveDown(BLOCK)
             elif moved_left == 1:
-                mac_gyver.moveRight(30)
+                mac_gyver.moveRight(BLOCK)
             elif moved_right == 1:
-                mac_gyver.moveLeft(30)
+                mac_gyver.moveLeft(BLOCK)
 
         background_sprite.draw(screen)
         wall_sprites.draw(screen)
@@ -179,7 +180,7 @@ while carryOn:
         
         myfont2 = pygame.font.SysFont('Comic Sans MS', 22, True)
         victory_sentence1 = "You managed to make the keeper fall asleep with all"
-        victory_sentence2 = "items you found and escaped the labyrinth !!" 
+        victory_sentence2 = "items you found and escaped the labyrinth !!"
         defeat_sentence1 = "The keeper was awake and killed you ! You need"
         defeat_sentence2 = "to find all items before trying to escape !"
         
