@@ -11,17 +11,24 @@ SCREENWIDTH = 450
 SCREENHEIGHT = 450
 BLOCK = 30
 
-# For the walls position, keys will be the x coordinates and values will be the y coordinates.
-WALL_POSITION = {0: [90, 120, 150, 270, 300, 330, 390, 420], 30: [0, 30, 90, 210, 270, 330, 390, 420],
-60: [30, 90, 150, 180, 210, 270, 420],
-90: [90, 180, 330, 360, 420], 120: [30, 60, 90, 120, 180, 210, 240, 270, 330, 360],
-150: [240, 360], 180: [0, 30, 90, 120, 150, 240, 300, 360, 390, 420],
-210: [240, 300], 240: [30, 60, 90, 120, 150, 180, 210, 240, 300, 330, 360, 390],
-270: [30, 120, 240, 390], 300: [30, 90, 180, 240, 270, 300, 330, 360, 390],
-330: [120, 180], 360: [0, 60, 90, 120, 180, 240, 300, 330, 360, 390, 420], 390: [0, 120, 240],
-420: [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360, 390]}
+#We open the text file which contains the map of the labyrinth
+with open("data/map", "r") as file:
+    content = file.read()
 
-size = (SCREENWIDTH, SCREENHEIGHT)
+def create_map(map_file): #Function used to add walls on the background
+    new_map = map_file.split("\n")
+    for line_number, line in enumerate(new_map):
+        line_list = list(line)
+        count = 0
+        while count < len(line_list):
+            if "0" in line_list[count]:
+                y_map = (line_number) * BLOCK
+                x_map = count * BLOCK
+                wall = objects.Wall(x_map, y_map)
+                wall_sprites.add(wall)
+            count += 1
+
+SIZE = (SCREENWIDTH, SCREENHEIGHT)
 
 #Creating all different sprite groups
 background_sprite = pygame.sprite.Group()
@@ -31,12 +38,6 @@ item_sprites = pygame.sprite.Group()
 boss_sprite = pygame.sprite.Group()
 blood_sprite = pygame.sprite.Group()
 text_sprite = pygame.sprite.Group()
-
-def draw_walls(): #Function used to draw all the walls as sprites on the map       
-    for x, y_list in WALL_POSITION.items():
-        for y in y_list:
-            wall = objects.Wall(x, y)
-            wall_sprites.add(wall)
 
 def create_item(location): #Function used to create each item of the game
     collision_nbr = 1
@@ -66,7 +67,7 @@ def main():
     # We hide the mouse
     pygame.mouse.set_visible(0)
 
-    screen = pygame.display.set_mode((size), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((SIZE), pygame.FULLSCREEN)
 
     #Game title
     pygame.display.set_caption("Mac Gyver Labyrinthe")
@@ -80,7 +81,7 @@ def main():
     boss = objects.Boss()
     boss_sprite.add(boss)
 
-    draw_walls()
+    create_map(content)
 
     ether = create_item("data/ether2.png")
     items_number += 1
