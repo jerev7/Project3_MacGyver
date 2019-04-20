@@ -1,6 +1,8 @@
 #! /usr/bin/env python3
 #coding: utf-8
 
+"""This file is the main code file"""
+
 import pygame
 import objects
 
@@ -12,10 +14,11 @@ SCREENHEIGHT = 450
 BLOCK = 30
 
 #We open the text file which contains the map of the labyrinth
-with open("data/map", "r") as file:
-    content = file.read()
+with open("data/map", "r") as text_file:
+    CONTENT = text_file.read()
 
-def create_map(map_file): #Function used to add walls on the background
+def create_map(map_file):
+    """Function used to add walls on the background"""
     new_map = map_file.split("\n")
     for line_number, line in enumerate(new_map):
         line_list = list(line)
@@ -25,40 +28,44 @@ def create_map(map_file): #Function used to add walls on the background
                 y_map = (line_number) * BLOCK
                 x_map = count * BLOCK
                 wall = objects.Wall(x_map, y_map)
-                wall_sprites.add(wall)
+                WALL_GRP.add(wall)
             count += 1
 
 SIZE = (SCREENWIDTH, SCREENHEIGHT)
 
 #Creating all different sprite groups
-background_sprite = pygame.sprite.Group()
-main_character_sprite = pygame.sprite.Group()
-wall_sprites = pygame.sprite.Group()
-item_sprites = pygame.sprite.Group()
-boss_sprite = pygame.sprite.Group()
-blood_sprite = pygame.sprite.Group()
-text_sprite = pygame.sprite.Group()
+BG_GRP = pygame.sprite.Group()
+MAIN_CHAR_GRP = pygame.sprite.Group()
+WALL_GRP = pygame.sprite.Group()
+ITEM_GRP = pygame.sprite.Group()
+BOSS_GRP = pygame.sprite.Group()
+BLOOD_GRP = pygame.sprite.Group()
+TEXT_GRP = pygame.sprite.Group()
 
-def create_item(location): #Function used to create each item of the game
+def create_item(location):
+    """Function used to create each item of the game"""
     collision_nbr = 1
     while collision_nbr != 0:
         item = objects.Item(location)
         collision_nbr = 0
-        #We test if the new item has not been created at the same place than another item already existing
-        if pygame.sprite.spritecollide(item, item_sprites, False):
+        #We test if the new item has not been created at the same place
+        #than another item already existing
+        if pygame.sprite.spritecollide(item, ITEM_GRP, False):
             collision_nbr += 1
         else:
-            item_sprites.add(item)
-        #Then we test if the item has not been created at the same place than walls, Mac Gyver, or the boss
-        if pygame.sprite.groupcollide(item_sprites, wall_sprites, True, False):
+            ITEM_GRP.add(item)
+        #Then we test if the item has not been created at the
+        #same place than walls, Mac Gyver, or the boss
+        if pygame.sprite.groupcollide(ITEM_GRP, WALL_GRP, True, False):
             collision_nbr += 1
-        if pygame.sprite.groupcollide(item_sprites, main_character_sprite, True, False):
+        if pygame.sprite.groupcollide(ITEM_GRP, MAIN_CHAR_GRP, True, False):
             collision_nbr += 1
-        if pygame.sprite.groupcollide(item_sprites, boss_sprite, True, False):
+        if pygame.sprite.groupcollide(ITEM_GRP, BOSS_GRP, True, False):
             collision_nbr += 1
     return item
 
-def main():    
+def main():
+    """Function to run everything the program needs in pygame interface"""
     items_picked_up = 0
     items_number = 0
 
@@ -73,15 +80,15 @@ def main():
     pygame.display.set_caption("Mac Gyver Labyrinthe")
 
     background = objects.Background()
-    background_sprite.add(background)
+    BG_GRP.add(background)
 
     mac_gyver = objects.MainCharacter()
-    main_character_sprite.add(mac_gyver)
+    MAIN_CHAR_GRP.add(mac_gyver)
 
     boss = objects.Boss()
-    boss_sprite.add(boss)
+    BOSS_GRP.add(boss)
 
-    create_map(content)
+    create_map(CONTENT)
 
     ether = create_item("data/ether2.png")
     items_number += 1
@@ -91,25 +98,25 @@ def main():
     items_number += 1
 
 
-    carryOn = True
-    clock=pygame.time.Clock()
-    while carryOn:
+    carry_on = True
+    clock = pygame.time.Clock()
+    while carry_on:
         moved_up = 0
         moved_down = 0
         moved_left = 0
         moved_right = 0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                carryOn = False
+                carry_on = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    carryOn = False
+                    carry_on = False
                 if event.key == pygame.K_DOWN:
                     if (mac_gyver.rect.y + BLOCK) < SCREENHEIGHT:
                         mac_gyver.moveDown(BLOCK)
                         moved_down += 1
                 if event.key == pygame.K_UP:
-                    if (mac_gyver.rect.y - BLOCK) >= 0: 
+                    if (mac_gyver.rect.y - BLOCK) >= 0:
                         mac_gyver.moveUp(BLOCK)
                         moved_up += 1
                 if event.key == pygame.K_LEFT:
@@ -120,22 +127,19 @@ def main():
                     if (mac_gyver.rect.x + BLOCK) < SCREENWIDTH:
                         mac_gyver.moveRight(BLOCK)
                         moved_right += 1
-                    
             #updating the sprites
-            background_sprite.update()
-            main_character_sprite.update()
-            wall_sprites.update()
-            item_sprites.update()
-            boss_sprite.update()
-            
-            collision_mac_gyver_vs_boss = pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, False)
-            collision_mac_gyver_vs_item = pygame.sprite.groupcollide(main_character_sprite, item_sprites, False, True)
-            collision_mac_gyver_vs_walls = pygame.sprite.groupcollide(main_character_sprite, wall_sprites, False, False)
+            BG_GRP.update()
+            MAIN_CHAR_GRP.update()
+            WALL_GRP.update()
+            ITEM_GRP.update()
+            BOSS_GRP.update()
+            coll_mac_vs_boss = pygame.sprite.groupcollide(MAIN_CHAR_GRP, BOSS_GRP, False, False)
+            coll_mac_vs_item = pygame.sprite.groupcollide(MAIN_CHAR_GRP, ITEM_GRP, False, True)
+            coll_mac_vs_wall = pygame.sprite.groupcollide(MAIN_CHAR_GRP, WALL_GRP, False, False)
 
-            if collision_mac_gyver_vs_item:
+            if coll_mac_vs_item:
                 items_picked_up += 1
-            
-            if collision_mac_gyver_vs_walls:
+            if coll_mac_vs_wall:
                 if moved_down == 1:
                     mac_gyver.moveUp(BLOCK)
                 elif moved_up == 1:
@@ -145,13 +149,12 @@ def main():
                 elif moved_right == 1:
                     mac_gyver.moveLeft(BLOCK)
 
-            background_sprite.draw(screen)
-            wall_sprites.draw(screen)
-            item_sprites.draw(screen)
-            
+            BG_GRP.draw(screen)
+            WALL_GRP.draw(screen)
+            ITEM_GRP.draw(screen)
             pygame.font.init()
 
-            #some variables for each line of the inventory 
+            #some variables for each line of the inventory
             bag_text = "Items picked up :"
             ether_full = "Ether : 1/1"
             ether_empty = "Ether : 0/1"
@@ -163,7 +166,8 @@ def main():
             myfont = pygame.font.SysFont('Comic Sans MS', 30)
             screen.blit(myfont.render(bag_text, False, (0, 0, 0)), (0, 330))
 
-            #it will determine how the inventory is displayed depending on which item the user has already picked up
+            #it will determine how the inventory is
+            #displayed depending on which item the user has already picked up
             if pygame.sprite.Sprite.alive(ether):
                 screen.blit(myfont.render(ether_empty, False, (0, 0, 0)), (0, 360))
             else:
@@ -177,45 +181,47 @@ def main():
             else:
                 screen.blit(myfont.render(needle_full, False, (0, 0, 0)), (0, 420))
 
-            
             myfont2 = pygame.font.SysFont('Comic Sans MS', 22, True)
             victory_sentence1 = "You managed to make the keeper fall asleep with all"
             victory_sentence2 = "items you found and escaped the labyrinth !!"
             defeat_sentence1 = "The keeper was awake and killed you ! You need"
             defeat_sentence2 = "to find all items before trying to escape !"
-            
             #those are the two ending situation, defeat or victory
-            if collision_mac_gyver_vs_boss:
+            if coll_mac_vs_boss:
                 if items_picked_up == items_number:
-                    pygame.sprite.groupcollide(main_character_sprite, boss_sprite, False, True)
-                    main_character_sprite.draw(screen)
-                    boss_sprite.draw(screen)
+                    pygame.sprite.groupcollide(MAIN_CHAR_GRP, BOSS_GRP, False, True)
+                    MAIN_CHAR_GRP.draw(screen)
+                    BOSS_GRP.draw(screen)
                     victory_image = objects.Text("data/win.png", 100, 100, 150, 150)
-                    text_sprite.add(victory_image)
-                    text_sprite.draw(screen)
-                    screen.blit(myfont2.render(victory_sentence1, False, (0, 0, 0), (255, 255, 255)), (0, 0))
-                    screen.blit(myfont2.render(victory_sentence2, False, (0, 0, 0), (255, 255, 255)), (0, 30))
+                    TEXT_GRP.add(victory_image)
+                    TEXT_GRP.draw(screen)
+                    screen.blit(myfont2.render(victory_sentence1, \
+                        False, (0, 0, 0), (255, 255, 255)), (0, 0))
+                    screen.blit(myfont2.render(victory_sentence2, \
+                        False, (0, 0, 0), (255, 255, 255)), (0, 30))
                     pygame.display.flip()
                     pygame.time.wait(7000)
-                    carryOn = False
+                    carry_on = False
                 else:
-                    pygame.sprite.groupcollide(main_character_sprite, boss_sprite, True, False)
-                    boss_sprite.draw(screen)
+                    pygame.sprite.groupcollide(MAIN_CHAR_GRP, BOSS_GRP, True, False)
+                    BOSS_GRP.draw(screen)
                     blood = objects.Blood(390)
-                    blood_sprite.add(blood)
-                    blood_sprite.draw(screen)
+                    BLOOD_GRP.add(blood)
+                    BLOOD_GRP.draw(screen)
                     defeat_image = objects.Text("data/loose.jpeg", 100, 100, 150, 150)
-                    text_sprite.add(defeat_image)
-                    text_sprite.draw(screen)
-                    screen.blit(myfont2.render(defeat_sentence1, False, (0, 0, 0), (255, 255, 255)), (0, 0))
-                    screen.blit(myfont2.render(defeat_sentence2, False, (0, 0, 0), (255, 255, 255)), (0, 30))
+                    TEXT_GRP.add(defeat_image)
+                    TEXT_GRP.draw(screen)
+                    screen.blit(myfont2.render(defeat_sentence1, \
+                        False, (0, 0, 0), (255, 255, 255)), (0, 0))
+                    screen.blit(myfont2.render(defeat_sentence2, \
+                        False, (0, 0, 0), (255, 255, 255)), (0, 30))
                     pygame.display.flip()
                     pygame.time.wait(7000)
-                    carryOn = False
-            #if it's not ended then program goes on        
+                    carry_on = False
+            #if it's not ended then program goes on
             else:
-                main_character_sprite.draw(screen)
-                boss_sprite.draw(screen)
+                MAIN_CHAR_GRP.draw(screen)
+                BOSS_GRP.draw(screen)
                 pygame.display.flip()
 
             #Number of frames per secong e.g. 60
