@@ -17,3 +17,5 @@ https://pip.pypa.io/en/stable/installing/
 
 * If you want to modify the labyrinth, you can change walls position by editing the file "map" in "data" folder : 
 It's a text file where the walls are written with the number 0
+
+Bonjour
